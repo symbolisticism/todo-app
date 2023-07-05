@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo/screens/todo.dart';
+import 'package:todo/screens/todo_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 241, 227, 101))
       ),
-      home: const ToDo(),
+      home: const Todo(),
     );
   }
 }
