@@ -12,6 +12,13 @@ class Todo extends StatefulWidget {
 }
 
 class _TodoState extends State<Todo> {
+  static const List<Icon> filterIcons = [
+    Icon(Icons.arrow_upward),
+    Icon(Icons.arrow_downward),
+  ];
+
+  Icon dropdownValue = filterIcons.first;
+
   void _showBottomOverlay(BuildContext context) {
     showModalBottomSheet(
       useSafeArea: true,
@@ -58,6 +65,20 @@ class _TodoState extends State<Todo> {
       appBar: AppBar(
         title: const Text('To Do List'),
         actions: [
+          DropdownButton<Icon>(
+            value: dropdownValue,
+            onChanged: (Icon? icon) {
+              setState(() {
+                dropdownValue = icon!;
+              });
+            },
+            items: filterIcons.map<DropdownMenuItem<Icon>>((Icon icon) {
+              return DropdownMenuItem<Icon>(
+                value: icon,
+                child: icon,
+              );
+            }).toList(),
+          ),
           IconButton(
             onPressed: () => _showBottomOverlay(context),
             icon: const Icon(Icons.add),
