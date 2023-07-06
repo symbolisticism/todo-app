@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo/data/dummy_data.dart';
+import 'package:todo/models/todo_item.dart';
 import 'package:todo/widgets/new_item.dart';
 import 'package:todo/widgets/todo_list.dart';
 
@@ -16,7 +17,15 @@ class _TodoState extends State<Todo> {
       useSafeArea: true,
       isScrollControlled: true,
       context: context,
-      builder: (ctx) => const NewItem(),
+      builder: (ctx) => NewItem(onAddItem: _addItem),
+    );
+  }
+
+  void _addItem(TodoItem todoItem) {
+    setState(
+      () {
+        dummyData.add(todoItem);
+      },
     );
   }
 
