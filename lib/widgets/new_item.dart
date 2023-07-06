@@ -3,27 +3,26 @@ import 'package:todo/data/dummy_data.dart';
 import 'package:todo/models/todo_item.dart';
 
 class NewItem extends StatefulWidget {
-  const NewItem({super.key});
+  const NewItem({
+    super.key,
+    required this.onAddItem,
+  });
+
+  final void Function(TodoItem todoItem) onAddItem;
 
   @override
   State<NewItem> createState() => _NewItemState();
 }
 
 class _NewItemState extends State<NewItem> {
-  
   final _descriptionController = TextEditingController();
   String? _enteredDescription;
 
   void _addItem(String description) {
-    dummyData.add(
+    widget.onAddItem(
       TodoItem(
           id: DateTime.now().toString(), done: false, description: description),
     );
-
-    for (final item in dummyData) {
-      print(DateTime.now());
-      print(item.description);
-    }
   }
 
   void _showDialog() {
@@ -92,6 +91,7 @@ class _NewItemState extends State<NewItem> {
                 const SizedBox(width: 24),
                 ElevatedButton(
                   onPressed: () {
+                    if (_validateInput()) _addItem(_enteredDescription!);
                     Navigator.of(context).pop();
                   },
                   child: const Text('Add Item'),
