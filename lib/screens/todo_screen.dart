@@ -29,6 +29,29 @@ class _TodoState extends State<Todo> {
     );
   }
 
+  void _removeItem(TodoItem todoItem) {
+    final itemIndex = dummyData.indexOf(todoItem);
+    setState(() {
+      dummyData.remove(todoItem);
+    });
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('To-do item deleted'),
+        duration: const Duration(seconds: 2),
+        action: SnackBarAction(
+          label: 'UNDO',
+          onPressed: () {
+            setState(() {
+              dummyData.insert(itemIndex, todoItem);
+            });
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +64,10 @@ class _TodoState extends State<Todo> {
           ),
         ],
       ),
-      body: TodoList(listItems: dummyData),
+      body: TodoList(
+        listItems: dummyData,
+        onRemoveItem: _removeItem,
+      ),
     );
   }
 }
