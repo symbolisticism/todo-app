@@ -3,15 +3,20 @@ import 'package:todo/data/dummy_data.dart';
 import 'package:todo/widgets/new_item.dart';
 import 'package:todo/widgets/todo_list.dart';
 
-class Todo extends StatelessWidget {
+class Todo extends StatefulWidget {
   const Todo({super.key});
 
+  @override
+  State<Todo> createState() => _TodoState();
+}
+
+class _TodoState extends State<Todo> {
   void _showBottomOverlay(BuildContext context) {
     showModalBottomSheet(
       useSafeArea: true,
       isScrollControlled: true,
       context: context,
-      builder: (context) => const NewItem(),
+      builder: (ctx) => const NewItem(),
     );
   }
 
