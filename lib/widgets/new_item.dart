@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:todo/data/dummy_data.dart';
 import 'package:todo/models/todo_item.dart';
 
 class NewItem extends StatefulWidget {
