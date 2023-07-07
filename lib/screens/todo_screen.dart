@@ -79,6 +79,7 @@ class _TodoState extends State<Todo> {
               );
             }).toList(),
           ),
+          const SizedBox(width: 48),
           IconButton(
             onPressed: () => _showBottomOverlay(context),
             icon: const Icon(Icons.add),
