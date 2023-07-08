@@ -71,11 +71,9 @@ class _TodoState extends State<Todo> {
               setState(() {
                 dropdownValue = icon!;
                 if (icon.icon == Icons.arrow_upward) {
-                  dummyData
-                      .sort((a, b) => a.id.compareTo(b.id));
+                  dummyData.sort((a, b) => a.id.compareTo(b.id));
                 } else {
-                  dummyData
-                      .sort((b, a) => a.id.compareTo(b.id));
+                  dummyData.sort((b, a) => a.id.compareTo(b.id));
                 }
               });
             },
