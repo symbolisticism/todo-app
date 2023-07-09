@@ -45,12 +45,24 @@ class ItemsNotifier extends StateNotifier<List<TodoItem>> {
     state = places;
   }
 
-  void addItem(String description) async {
-    final newItem = TodoItem(
-      id: DateTime.now().toString(),
-      done: false,
-      description: description,
-    );
+  void addItem(String? id, bool? done, String description) async {
+    final TodoItem newItem;
+
+    if (id == null || done == null) {
+      print('Adding brand new item');
+      newItem = TodoItem(
+        id: DateTime.now().toString(),
+        done: false,
+        description: description,
+      );
+    } else {
+      print('Adding old item');
+      newItem = TodoItem(
+        id: id,
+        done: done,
+        description: description,
+      );
+    }
 
     final db = await _getDatabase();
 
@@ -69,10 +81,9 @@ class ItemsNotifier extends StateNotifier<List<TodoItem>> {
   Future<int> removeItem(String id) async {
     final db = await _getDatabase();
 
-    int count =
-        await db.delete('items', where: 'id = ?', whereArgs: [id]);
+    int count = await db.delete('items', where: 'id = ?', whereArgs: [id]);
 
-    return count; 
+    return count;
   }
 }
 
