@@ -3,15 +3,19 @@ import 'package:todo/data/dummy_data.dart';
 import 'package:todo/models/todo_item.dart';
 import 'package:todo/widgets/new_item.dart';
 import 'package:todo/widgets/todo_list.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo/providers/list_items_provider.dart';
 
-class Todo extends StatefulWidget {
+class Todo extends ConsumerStatefulWidget {
   const Todo({super.key});
 
   @override
-  State<Todo> createState() => _TodoState();
+  ConsumerState<Todo> createState() => _TodoState();
 }
 
-class _TodoState extends State<Todo> {
+class _TodoState extends ConsumerState<Todo> {
+  late Future<void> _itemsFuture;
+
   static const List<Icon> filterIcons = [
     Icon(Icons.arrow_upward),
     Icon(Icons.arrow_downward),
@@ -31,15 +35,22 @@ class _TodoState extends State<Todo> {
   void _addItem(TodoItem todoItem) {
     setState(
       () {
-        dummyData.add(todoItem);
+        // dummyData.add(todoItem);
+        final provider = ref.watch(itemsProvider.notifier);
+        provider.addItem(null, null, todoItem.description);
       },
     );
   }
 
   void _removeItem(TodoItem todoItem) {
-    final itemIndex = dummyData.indexOf(todoItem);
+    // final itemIndex = dummyData.indexOf(todoItem);
+    final provider = ref.watch(itemsProvider.notifier);
+    Future<int> count;
+
     setState(() {
-      dummyData.remove(todoItem);
+      // dummyData.remove(todoItem);
+      count = provider.removeItem(todoItem.id);
+      print('Items deleted: $count');
     });
 
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -51,7 +62,12 @@ class _TodoState extends State<Todo> {
           label: 'UNDO',
           onPressed: () {
             setState(() {
-              dummyData.insert(itemIndex, todoItem);
+              // dummyData.insert(itemIndex, todoItem);
+              provider.addItem(
+                todoItem.id,
+                todoItem.done,
+                todoItem.description,
+              );
             });
           },
         ),
@@ -60,7 +76,15 @@ class _TodoState extends State<Todo> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _itemsFuture = ref.read(itemsProvider.notifier).loadItems();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final userItems = ref.watch(itemsProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('To Do List'),
@@ -91,9 +115,16 @@ class _TodoState extends State<Todo> {
           ),
         ],
       ),
-      body: TodoList(
-        listItems: dummyData,
-        onRemoveItem: _removeItem,
+      // body: TodoList(
+      //   listItems: dummyData,
+      //   onRemoveItem: _removeItem,
+      // ),
+      body: FutureBuilder(
+        future: _itemsFuture,
+        builder: (context, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? const Center(child: CircularProgressIndicator())
+                : TodoList(listItems: userItems, onRemoveItem: _removeItem),
       ),
     );
   }
