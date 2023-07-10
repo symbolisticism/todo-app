@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:todo/data/dummy_data.dart';
-import 'package:todo/models/todo_item.dart';
 import 'package:todo/widgets/new_item.dart';
 import 'package:todo/widgets/todo_list.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,52 +27,11 @@ class _TodoState extends ConsumerState<Todo> {
       useSafeArea: true,
       isScrollControlled: true,
       context: context,
-      builder: (ctx) => NewItem(onAddItem: _addItem),
+      builder: (ctx) => const NewItem(),
     );
   }
 
-  void _addItem(TodoItem todoItem) {
-    setState(
-      () {
-        // dummyData.add(todoItem);
-        final provider = ref.watch(itemsProvider.notifier);
-        provider.addItem(null, null, todoItem.description);
-      },
-    );
-  }
-
-  void _removeItem(TodoItem todoItem) {
-    // final itemIndex = dummyData.indexOf(todoItem);
-    final provider = ref.watch(itemsProvider.notifier);
-    Future<int> count;
-
-    setState(() {
-      // dummyData.remove(todoItem);
-      count = provider.removeItem(todoItem.id);
-      print('Items deleted: $count');
-    });
-
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('To-do item deleted'),
-        duration: const Duration(seconds: 2),
-        action: SnackBarAction(
-          label: 'UNDO',
-          onPressed: () {
-            setState(() {
-              // dummyData.insert(itemIndex, todoItem);
-              provider.addItem(
-                todoItem.id,
-                todoItem.done,
-                todoItem.description,
-              );
-            });
-          },
-        ),
-      ),
-    );
-  }
+  
 
   @override
   void initState() {
@@ -124,7 +82,7 @@ class _TodoState extends ConsumerState<Todo> {
         builder: (context, snapshot) =>
             snapshot.connectionState == ConnectionState.waiting
                 ? const Center(child: CircularProgressIndicator())
-                : TodoList(listItems: userItems, onRemoveItem: _removeItem),
+                : TodoList(listItems: userItems),
       ),
     );
   }
