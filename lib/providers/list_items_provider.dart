@@ -49,14 +49,12 @@ class ItemsNotifier extends StateNotifier<List<TodoItem>> {
     final TodoItem newItem;
 
     if (id == null || done == null) {
-      print('Adding brand new item');
       newItem = TodoItem(
         id: DateTime.now().toString(),
         done: false,
         description: description,
       );
     } else {
-      print('Adding old item');
       newItem = TodoItem(
         id: id,
         done: done,
@@ -78,12 +76,6 @@ class ItemsNotifier extends StateNotifier<List<TodoItem>> {
 
     // update state
     state = [newItem, ...state];
-
-    for (final item in state) {
-      int counter = 1;
-      print('$counter: ${item.description}');
-      counter++;
-    }
   }
 
   void removeItem(String id) async {
@@ -94,12 +86,6 @@ class ItemsNotifier extends StateNotifier<List<TodoItem>> {
 
     // update state
     state = state.where((todoItem) => todoItem.id != id).toList();
-
-    for (final item in state) {
-      int counter = 1;
-      print('$counter: ${item.description}');
-      counter++;
-    }
   }
 }
 
