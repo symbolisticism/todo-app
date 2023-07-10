@@ -66,6 +66,7 @@ class ItemsNotifier extends StateNotifier<List<TodoItem>> {
 
     final db = await _getDatabase();
 
+    // update database
     db.insert(
       'items',
       {
@@ -75,15 +76,30 @@ class ItemsNotifier extends StateNotifier<List<TodoItem>> {
       },
     );
 
+    // update state
     state = [newItem, ...state];
+
+    for (final item in state) {
+      int counter = 1;
+      print('$counter: ${item.description}');
+      counter++;
+    }
   }
 
-  Future<int> removeItem(String id) async {
+  void removeItem(String id) async {
     final db = await _getDatabase();
 
-    int count = await db.delete('items', where: 'id = ?', whereArgs: [id]);
+    // update database
+    await db.delete('items', where: 'id = ?', whereArgs: [id]);
 
-    return count;
+    // update state
+    state = state.where((todoItem) => todoItem.id != id).toList();
+
+    for (final item in state) {
+      int counter = 1;
+      print('$counter: ${item.description}');
+      counter++;
+    }
   }
 }
 
