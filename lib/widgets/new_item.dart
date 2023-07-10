@@ -1,28 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:todo/models/todo_item.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo/providers/list_items_provider.dart';
 
-class NewItem extends StatefulWidget {
-  const NewItem({
-    super.key,
-    required this.onAddItem,
-  });
-
-  final void Function(TodoItem todoItem) onAddItem;
+class NewItem extends ConsumerStatefulWidget {
+  const NewItem({super.key});
 
   @override
-  State<NewItem> createState() => _NewItemState();
+  ConsumerState<NewItem> createState() => _NewItemState();
 }
 
-class _NewItemState extends State<NewItem> {
+class _NewItemState extends ConsumerState<NewItem> {
   final _descriptionController = TextEditingController();
   String? _enteredDescription;
-
-  void _addItem(String description) {
-    widget.onAddItem(
-      TodoItem(
-          id: DateTime.now().toString(), done: false, description: description),
-    );
-  }
 
   void _showDialog() {
     showDialog(
@@ -90,7 +79,10 @@ class _NewItemState extends State<NewItem> {
                 const SizedBox(width: 24),
                 ElevatedButton(
                   onPressed: () {
-                    if (_validateInput()) _addItem(_enteredDescription!);
+                    if (_validateInput()) {
+                      final provider = ref.watch(itemsProvider.notifier);
+                      provider.addItem(null, null, _enteredDescription!);
+                    }
                     Navigator.of(context).pop();
                   },
                   child: const Text('Add Item'),
