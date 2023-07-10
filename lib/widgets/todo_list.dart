@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:todo/models/todo_item.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo/providers/list_items_provider.dart';
 
-class TodoList extends StatefulWidget {
+class TodoList extends ConsumerStatefulWidget {
   const TodoList({
     super.key,
     required this.listItems,
-    required this.onRemoveItem,
   });
 
   final List<TodoItem> listItems;
-  final void Function(TodoItem todoItem) onRemoveItem;
 
   @override
-  State<TodoList> createState() => _TodoListState();
+  ConsumerState<TodoList> createState() => _TodoListState();
 }
 
-class _TodoListState extends State<TodoList> {
+class _TodoListState extends ConsumerState<TodoList> {
   @override
   Widget build(BuildContext context) {
     Widget content;
@@ -31,12 +31,37 @@ class _TodoListState extends State<TodoList> {
       content = ListView.builder(
         itemCount: widget.listItems.length,
         itemBuilder: (context, index) => Dismissible(
-          key: ValueKey(widget.listItems[index]),
+          key: UniqueKey(), // ValueKey(widget.listItems[index].id),
           background: Container(
             color: Theme.of(context).colorScheme.error.withOpacity(0.75),
           ),
           onDismissed: (direction) {
-            widget.onRemoveItem(widget.listItems[index]);
+            final item = widget.listItems[index];
+            final provider = ref.watch(itemsProvider.notifier);
+
+            // remove the item
+            provider.removeItem(item.id);
+
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: const Text('To-do item deleted'),
+                duration: const Duration(seconds: 2),
+                action: SnackBarAction(
+                  label: 'UNDO',
+                  onPressed: () {
+                    setState(() {
+                      // dummyData.insert(itemIndex, todoItem);
+                      provider.addItem(
+                        item.id,
+                        item.done,
+                        item.description,
+                      );
+                    });
+                  },
+                ),
+              ),
+            );
           },
           child: ListTile(
             title: Text(widget.listItems[index].description),
