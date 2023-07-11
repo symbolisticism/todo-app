@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:todo/data/dummy_data.dart';
 import 'package:todo/widgets/new_item.dart';
 import 'package:todo/widgets/todo_list.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
