@@ -31,8 +31,6 @@ class _TodoState extends ConsumerState<Todo> {
     );
   }
 
-  
-
   @override
   void initState() {
     super.initState();
@@ -53,9 +51,13 @@ class _TodoState extends ConsumerState<Todo> {
               setState(() {
                 dropdownValue = icon!;
                 if (icon.icon == Icons.arrow_upward) {
-                  dummyData.sort((a, b) => a.id.compareTo(b.id));
+                  setState(() {
+                    ref.watch(itemsProvider.notifier).loadItems(ascending: false);
+                  });
                 } else {
-                  dummyData.sort((b, a) => a.id.compareTo(b.id));
+                  setState(() {
+                    ref.watch(itemsProvider.notifier).loadItems();
+                  });
                 }
               });
             },
